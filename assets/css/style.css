@@ -1,0 +1,21 @@
+body{
+    background-color: #a9a6ff;
+}
+
+.img-productos{
+    margin : 20px 0px;
+    padding:10px;
+    min-height:30vh;
+}
+
+.card-productos{
+    width:85%;
+    margin:auto;
+    min-height:53vh;
+    border-radius: 30px;
+    box-shadow: 12px 12px 2px 1px rgba(0, 0, 255, .2);
+}
+
+.title-productos{
+    min-height: 47px;
+}
