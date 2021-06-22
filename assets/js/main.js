@@ -1,35 +1,83 @@
-document.addEventListener('DOMContentLoaded',()=>{
-    fetchData();
-})
-const fetchData = async () => {
-    try {
-        const res = await fetch('http://localhost:8080/api/producto/')
-        const data = await res.json()
-        console.log(data)
-        pintarCard(data)
-    } catch (error) {
-        console.log(error)
-    }
+const content = document.getElementById("content");
+const content2 = document.getElementById("content2");
+
+const baseURL = `http://localhost:8080/api/producto/`;
+const inputProducto = document.getElementById("productoName");
+const buttonSearch = document.getElementById("searchProducto");
+const buttonDelete = document.getElementById("removeProducto");
+
+buttonSearch.addEventListener("click", BuscarProduct);
+buttonDelete.addEventListener("click", deleteProduct);
+
+function BuscarProduct() {
+  window
+    .fetch(`${baseURL}${inputProducto.value.toLocaleUpperCase()}`)
+    .then((res) => {
+      if (res.status === 400) {
+        alert("Este producto no existe, pruebe con otro");
+      } else {
+        return res.json();
+      }
+    })
+    .then((resJSON) => {
+
+      resJSON.forEach((e) => {
+        const product = `
+        
+        <div class="col-md-3  my-5">
+          <div class="card card-productos">
+              <img src="${e.url_image}" class="card-img-top img-productos" alt="Imagen no disponible">
+              <div class="card-body">
+                <h5 class="card-title title-productos">${e.name}</h5>
+                <p class="card-text">'$'${e.price}</p>
+                <a href="#" class="btn btn-primary">comprar</a>
+              </div>
+              </div>
+           
+      </div>
+          `;
+        content2.insertAdjacentHTML("beforeEnd", product);
+      });
+    });
 }
 
-const pintarCard = (producto) => {
-    const contenido = document.querySelector('#contenido');
-    producto.forEach(producto => {
-        const row = document.createElement('div');
-        row.classList.add('col-md-3','mt-5');
-        row.innerHTML += `
-        <div class="card card-productos">
-        <img src="${producto.url_image}" class="card-img-top img-productos" alt="Imagen no disponible">
+function deleteProduct() {
+  var allProduct = content2.childNodes;
+  allProduct = Array.from(allProduct);
+
+  allProduct.forEach((inputProducto) => {
+    inputProducto.remove(inputProducto);
+  });
+
+  console.log("presionaste borrar");
+}
+const getConnection = () => {
+  const URL = `http://localhost:8080/api/producto/`;
+
+  fetch(URL)
+    .then((res) => res.json())
+    .then((res) => {
+      res.forEach((e) => {
+        drawProduct(e);
+      });
+    })
+    .catch((e) => console.log(e));
+};
+
+const drawProduct = (e) => {
+  const product = `
+          <div class="col-md-3  my-5">
+    <div class="card card-productos">
+        <img src="${e.url_image}" class="card-img-top img-productos" alt="Imagen no disponible">
         <div class="card-body">
-          <h5 class="card-title title-productos">${producto.name}</h5>
-          <p class="card-text">$${producto.price}.-</p>
+          <h5 class="card-title title-productos">${e.name}</h5>
+          <p class="card-text">'$'${e.price}</p>
           <a href="#" class="btn btn-primary">comprar</a>
         </div>
         </div>
+        </div>
+    `;
+  content.insertAdjacentHTML("beforeEnd", product);
+};
 
-        `;
-        contenido.appendChild(row);
-    });
-    
-
-}
+getConnection();
